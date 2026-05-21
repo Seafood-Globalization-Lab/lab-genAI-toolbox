@@ -1,4 +1,4 @@
-# Generative Artifical Intelegence Collaborator Agreement for Scientific Research Outputs 
+# Generative AI Collaborator Agreement for Scientific Research Outputs 
 
 ## Purpose 
 
