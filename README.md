@@ -1,6 +1,9 @@
 # lab-genAI-toolbox
 A collection of tools and resources produced from the Seafood Globalization Lab's ongoing discussion of our GenAI policy. 
 
+> [!CAUTION]
+> As of 2026-06-18 this is very much a work in progress and all outlined features may not be fully working. As always, careful human review and editing of GenAI work is required.
+
 ## Add this toolbox to your repo
 
 Run this in your terminal to clone the toolbox repo into your active repo as a hidden folder. 
