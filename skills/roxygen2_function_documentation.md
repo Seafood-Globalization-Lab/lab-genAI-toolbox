@@ -1,44 +1,62 @@
-# ARTIS Roxygen2 Documentation Skill
-
-<!-- Suggested filename: roxygen2-function-documentation.md -->
+---
+skill: lab-roxygen2-function-documentation
+version: 0.2.0
+last_updated: 2026-06-18
+applies_to: any R package in the lab
+authors: [theamarks]
+---
 
 ## Purpose
 
 This skill guides an AI assistant in writing and updating roxygen2 documentation
-for functions in the `artis` R package. All functions are exported and require
-full documentation. The goal is consistent, accurate, developer-facing
-documentation that reflects both official roxygen2 conventions and ARTIS
-package style.
+for functions in a lab R package. All functions are exported and require full
+documentation. The goal is consistent, accurate, developer-facing documentation
+that reflects both official roxygen2 conventions and lab package style.
 
 ---
 
 ## Package Context
 
-**ARTIS (Aquatic Resource Trade in Species)** is a global model and database
-that estimates bilateral seafood trade flows at the species level from 1994 to
-2023. It integrates production data, detailed trade statistics, and biological
-characteristics of seafood products to reconstruct trade networks and infer
-domestic consumption. The model accounts for re-exports, product
-transformations (e.g. fishmeal production), and multiple trade classification
-systems (HS codes).
+### How to establish package context
 
-The package provides tools to:
-- Clean and standardize seafood trade and production data
-- Allocate trade flows and compute consumption metrics
-- Match taxa names against FishBase and SeaLifeBase
-- Resolve synonyms, HS product codes, and conversion factors
+**Before writing or updating any documentation**, read the repo root `README.md`
+to establish package context. Extract the following from it:
 
-Functions are organized into a pipeline. Understanding where a function sits in
-that pipeline — what calls it, what it calls, what it reads from disk and what
-it writes — is essential for writing accurate `@details` and `@seealso`
-sections.
+- What the package does — scientific or analytical purpose
+- What the package provides — main categories of tools or functions
+- How functions are organized — pipeline, module, utility, or other structure
+- Any domain-specific terminology, naming conventions, or key concepts
+
+This context is essential for writing accurate `@details` (pipeline narrative)
+and `@seealso` (direct relationships) sections. Do not begin documentation
+until this context is established.
+
+### If README.md is missing or insufficient
+
+If the repo root `README.md` does not exist, or exists but does not provide
+enough information to understand the package structure and purpose, do not
+guess or proceed with incomplete context. Instead, ask the user:
+
+> The `README.md` does not contain enough context for me to document this
+> function accurately. Could you point me to another file that describes the
+> package? For example:
+> - `DESCRIPTION` — for a brief package summary
+> - A vignette in `vignettes/` — for a narrative overview
+> - A specific source file — if you can point me to where this function fits
+>   in the pipeline
+
+Wait for the user's response before proceeding.
 
 ### DESCRIPTION configuration
+
+Also check the `DESCRIPTION` file for roxygen2 configuration. If it contains:
+
 ```
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 ```
-Markdown is enabled package-wide. Do not add `@md` tags to individual blocks.
+
+then markdown is enabled package-wide. Do not add `@md` tags to individual
+blocks.
 
 ---
 
@@ -51,12 +69,12 @@ Look for:
 - Input types and roles (for `@param`)
 - What is returned — shape, columns, rows, downstream usage (for `@return`)
 - Integrity checks, warnings, or validation logic (for `@details` subsections)
-- Manual correction blocks with snapshot/server scoping (for `@details`)
+- Manual correction blocks with any scoping conditions (for `@details`)
 - Any dropped or filtered rows with a specific rationale (for `@note`)
 - Calls to other package functions — both callers and callees (for `@seealso`)
 - Any external reference data or documentation URLs (for `@seealso`)
 
-### Step 2 — Identify the function's place in the pipeline
+### Step 2 — Identify the function's place in the package
 
 Ask:
 - What function calls this one?
@@ -102,7 +120,7 @@ title (implicit, first line)
 - Think about how a developer would search for this function
 
 ```r
-#' Clean FishBase / SeaLifeBase synonym corrections table
+#' Clean and validate input records table
 ```
 
 ---
@@ -118,9 +136,9 @@ title (implicit, first line)
 - Inline code (column names, function arguments, file names) in backticks
 
 ```r
-#' Transforms a raw FishBase or SeaLifeBase synonyms table into a cleaned
-#' synonym corrections table that maps non-accepted synonym name strings to
-#' their accepted taxonomic names via `spec_code`.
+#' Transforms a raw input table into a validated, standardized form suitable
+#' for downstream processing, filtering invalid rows and normalizing column
+#' values according to the package reference data.
 ```
 
 ---
@@ -140,37 +158,27 @@ title (implicit, first line)
 
 ```r
 #' @details
-#' Called inside [collect_fb_slb_data()] for both FishBase and SeaLifeBase.
-#' The output is written to `fb_synonyms_clean.csv` / `slb_synonyms_clean.csv`
-#' and later read by multiple downstream functions that pass it to
-#' [query_synonyms()] for synonym resolution:
+#' Called inside [run_pipeline()] as the first validation step. The output is
+#' passed directly to [process_records()] and also consumed by
+#' [generate_summary()]:
 #'
-#' * [match_prod_taxa_to_fbslb()] — resolves unmatched production scientific
-#'   names during taxa matching
-#' * [clean_hs()] — resolves HS product code species names to accepted names
-#' * [compile_cf()] — resolves unmatched species names during conversion factor
-#'   compilation
+#' * [process_records()] — applies transformation logic to validated rows
+#' * [generate_summary()] — aggregates validated records for reporting
 #'
 #' ## Data integrity checks
 #'
-#' Runs three data integrity checks and emits `cli` warnings if violations are
-#' found. All three checks test the assumption that a single synonym name string
-#' maps to a single accepted taxonomic name:
+#' Runs two data integrity checks and emits `cli` warnings if violations are
+#' found:
 #'
-#' * **`spec_code` integrity check** — groups by `spec_code` and detects cases
-#'   where a single FishBase/SeaLifeBase species ID resolves to more than one
-#'   `accepted_name`. Indicates an upstream database error.
-#' * **Synonym string ambiguity check** — groups by `synonym` name string and
-#'   detects cases where the same synonym text points to different `spec_code`s.
-#' * **`accepted_status` integrity check** — groups by `spec_code` and detects
-#'   cases where both `"accepted name"` and `"provisionally accepted name"`
-#'   coexist for the same species ID.
+#' * **ID uniqueness check** — detects duplicate row identifiers that would
+#'   cause one-to-many join errors downstream.
+#' * **Required fields check** — detects rows where mandatory columns are `NA`.
 #'
 #' ## Manual corrections
 #'
-#' Manual corrections (snapshot- and server-specific) are applied after table
-#' assembly and before the assumption checks. See the
-#' *Apply manual corrections* section of the function body.
+#' Manual corrections are applied after initial validation and before the
+#' integrity checks. See the *Apply manual corrections* section of the
+#' function body.
 ```
 
 ---
@@ -184,21 +192,22 @@ title (implicit, first line)
   - If not obvious from the name, explain what the argument does
 - Inline code for argument values, column names, function calls
 - For arguments with a fixed set of allowed values, list them inline with
-  backtick-quoted strings: `"fishbase"` or `"sealifebase"`
+  backtick-quoted strings
 - For arguments with default values that are non-obvious, document the default
 - For arguments that accept `NULL`, note it explicitly in the type and document
   the behaviour: e.g. `Character or \`NULL\`. If \`NULL\`, [describe fallback
   behaviour]. Default: \`NULL\`.`
 
 ```r
-#' @param the_df Data frame. Raw synonyms table as returned by
-#'   `rfishbase::fb_tbl("synonyms", ...)`.
-#' @param the_snapshot Character. The `rfishbase` snapshot version (e.g.
-#'   `"25.04"`). Used to scope manual corrections to the correct snapshot and
-#'   prevent corrections from propagating silently into future snapshot data.
-#' @param the_server Character. One of `"fishbase"` or `"sealifebase"`. Used
-#'   alongside `the_snapshot` to scope manual corrections to the correct
-#'   database.
+#' @param the_df Data frame. Raw input table to be validated and cleaned.
+#' @param the_version Character. The reference data version string (e.g.
+#'   `"25.04"`). Used to scope manual corrections to the correct version and
+#'   prevent corrections from propagating silently into future data releases.
+#' @param the_source Character. One of `"sourceA"` or `"sourceB"`. Used
+#'   alongside `the_version` to scope manual corrections to the correct
+#'   data source.
+#' @param verbose Logical or `NULL`. If `TRUE`, emits progress messages via
+#'   `cli`. If `NULL`, falls back to the package-level option. Default: `NULL`.
 ```
 
 ---
@@ -217,23 +226,24 @@ title (implicit, first line)
 
 Simple case:
 ```r
-#' @return A data frame with one row per synonym–accepted name pair.
+#' @return A data frame with one row per validated input record.
 ```
 
 Richer case (data frame with notable structure):
 ```r
 #' @return
-#' A data frame with one row per production record. The output has the
+#' A data frame with one row per validated input record. The output has the
 #' following properties:
 #'
-#' * Rows represent individual species–country–year production events.
-#' * Columns include `species`, `country_iso3c`, `year`, `live_weight_t`.
+#' * Rows represent individual validated records after filtering.
+#' * Columns include `id`, `name`, `year`, `value`.
+#' * Passed directly to [process_records()] for downstream transformation.
 ```
 
 Side-effect case:
 ```r
 #' @return Called for its side effects. Returns `invisible(NULL)`. Writes
-#'   `fb_synonyms_clean.csv` to the path specified by `output_path`.
+#'   `validated_records.csv` to the path specified by `output_path`.
 ```
 
 ---
@@ -248,9 +258,8 @@ Side-effect case:
 - Inline code for column names and values
 
 ```r
-#' @note `spec_code` values of `0` are dropped — these are
-#'   FishBase/SeaLifeBase backlog entries awaiting validation and have not yet
-#'   been assigned a valid species ID.
+#' @note Rows where `id` is `0` or `NA` are dropped prior to validation —
+#'   these represent placeholder entries not yet assigned a valid identifier.
 ```
 
 ---
@@ -262,21 +271,15 @@ Side-effect case:
   with a brief `—` dash description of the relationship
 - Include external documentation URLs as a final bullet where relevant
 - Use `[function()]` link syntax throughout
+- Do not include functions that are only indirectly related (connected via an
+  intermediate function) — use `@details` for pipeline narrative instead
 
 ```r
 #' @seealso
-#' * [collect_fb_slb_data()] — calls this function and writes the output to
-#'   disk
-#' * [query_synonyms()] — performs the synonym lookup using the output CSV
-#' * [match_prod_taxa_to_fbslb()] — reads the output CSV and passes it to
-#'   [query_synonyms()] for synonym resolution
-#'   [query_synonyms()] for synonym resolution
-#' * [clean_hs()] — reads the output CSV and passes it to
-#'   [query_synonyms()] for synonym resolution
-#' * [compile_cf()] — reads the output CSV and passes it to
-#'   [query_synonyms()] for synonym resolution
-#' * FishBase SYNONYMS table documentation:
-#'   <https://www.fishbase.se/manual/english/FishBaseThe_SYNONYMS_Table.htm>
+#' * [run_pipeline()] — calls this function as the first validation step
+#' * [process_records()] — receives the validated output of this function
+#' * [generate_summary()] — also consumes the validated output
+#' * Reference data documentation: <https://example.org/reference-data-docs>
 ```
 
 ---
@@ -285,14 +288,15 @@ Side-effect case:
 
 - Use `@import pkg` for packages used pervasively in the function body
 - Use `@importFrom pkg fun` for single function imports
-- Always include `@import dplyr` and `@import cli` if used
-- This package uses the **magrittr pipe** (`%>%`). Always include
-  `@importFrom magrittr %>%` when the pipe is used in the function body
+- Document only the imports actually used in the function body — do not copy
+  a fixed list from another function without checking
+- Common lab patterns (include only those that apply):
 
 ```r
 #' @import dplyr
 #' @import cli
 #' @importFrom magrittr %>%
+#' @importFrom rlang .data
 ```
 
 ---
@@ -322,85 +326,59 @@ Side-effect case:
 ## Complete Example
 
 ```r
-#' Clean FishBase / SeaLifeBase synonym corrections table
+#' Clean and validate input records table
 #'
-#' Transforms a raw FishBase or SeaLifeBase synonyms table into a cleaned
-#' synonym corrections table that maps non-accepted synonym name strings to
-#' their accepted taxonomic names via `spec_code`.
+#' Transforms a raw input table into a validated, standardized form suitable
+#' for downstream processing, filtering invalid rows and normalizing column
+#' values according to the package reference data.
 #'
 #' @details
-#' Called inside [collect_fb_slb_data()] for both FishBase and SeaLifeBase.
-#' The output is written to `fb_synonyms_clean.csv` / `slb_synonyms_clean.csv`
-#' and later read by multiple downstream functions that pass it to
-#' [query_synonyms()] for synonym resolution:
+#' Called inside [run_pipeline()] as the first validation step. The output is
+#' passed directly to [process_records()] and also consumed by
+#' [generate_summary()]:
 #'
-#' * [match_prod_taxa_to_fbslb()] — resolves unmatched production scientific
-#'   names during taxa matching
-#' * [clean_hs()] — resolves HS product code species names to accepted names
-#' * [compile_cf()] — resolves unmatched species names during conversion factor
-#'   compilation
+#' * [process_records()] — applies transformation logic to validated rows
+#' * [generate_summary()] — aggregates validated records for reporting
 #'
 #' ## Data integrity checks
 #'
-#' Runs three data integrity checks and emits `cli` warnings if violations are
-#' found. Both checks test the assumption that a single synonym name string
-#' maps to a single accepted taxonomic name, but via different pathways:
+#' Runs two data integrity checks and emits `cli` warnings if violations are
+#' found:
 #'
-#' * **`spec_code` integrity check** — groups by `spec_code` and detects cases
-#'   where a single FishBase/SeaLifeBase species ID resolves to more than one
-#'   `accepted_name`. Indicates an upstream database error — the same species
-#'   ID was assigned conflicting accepted names in FishBase/SeaLifeBase.
-#' * **Synonym string ambiguity check** — groups by `synonym` name string and
-#'   detects cases where the same synonym text appears as multiple distinct
-#'   FishBase/SeaLifeBase entries (different `syn_code`s) pointing to different
-#'   `spec_code`s. The synonym string alone is insufficient to uniquely
-#'   identify a species, causing a one-to-many join error in [query_synonyms()].
-#' * **`accepted_status` integrity check** — groups by `spec_code` and detects
-#'   cases where both `"accepted name"` and `"provisionally accepted name"`
-#'   coexist for the same species ID. Indicates FishBase/SeaLifeBase assigned
-#'   conflicting acceptance statuses to the same species ID. No working
-#'   protocol exists for this scenario; requires developer investigation via
-#'   WoRMS.
+#' * **ID uniqueness check** — detects duplicate row identifiers that would
+#'   cause one-to-many join errors downstream.
+#' * **Required fields check** — detects rows where mandatory columns are `NA`.
 #'
 #' ## Manual corrections
 #'
-#' Manual corrections (snapshot- and server-specific) are applied after table
-#' assembly and before the assumption checks. See the
-#' *Apply manual corrections* section of the function body.
+#' Manual corrections are applied after initial validation and before the
+#' integrity checks. See the *Apply manual corrections* section of the
+#' function body.
 #'
-#' @param the_df Data frame. Raw synonyms table as returned by
-#'   `rfishbase::fb_tbl("synonyms", ...)`.
-#' @param the_snapshot Character. The `rfishbase` snapshot version (e.g.
-#'   `"25.04"`). Used to scope manual corrections to the correct snapshot and
-#'   prevent corrections from propagating silently into future snapshot data.
-#' @param the_server Character. One of `"fishbase"` or `"sealifebase"`. Used
-#'   alongside `the_snapshot` to scope manual corrections to the correct
-#'   database.
+#' @param the_df Data frame. Raw input table to be validated and cleaned.
+#' @param the_version Character. The reference data version string (e.g.
+#'   `"25.04"`). Used to scope manual corrections to the correct version and
+#'   prevent corrections from propagating silently into future data releases.
+#' @param the_source Character. One of `"sourceA"` or `"sourceB"`. Used
+#'   alongside `the_version` to scope manual corrections to the correct
+#'   data source.
 #'
-#' @return A data frame with one row per synonym–accepted name pair.
+#' @return A data frame with one row per validated input record.
 #'
-#' @note `spec_code` values of `0` are dropped — these are
-#'   FishBase/SeaLifeBase backlog entries awaiting validation and have not yet
-#'   been assigned a valid species ID.
+#' @note Rows where `id` is `0` or `NA` are dropped prior to validation —
+#'   these represent placeholder entries not yet assigned a valid identifier.
 #'
 #' @seealso
-#' * [collect_fb_slb_data()] — calls this function and writes the output to
-#'   disk
-#' * [query_synonyms()] — performs the synonym lookup using the output CSV
-#' * [match_prod_taxa_to_fbslb()] — reads the output CSV and passes it to
-#'   [query_synonyms()] for synonym resolution
-#' * [clean_hs()] — reads the output CSV and passes it to
-#'   [query_synonyms()] for synonym resolution
-#' * [compile_cf()] — reads the output CSV and passes it to
-#'   [query_synonyms()] for synonym resolution
-#' * FishBase SYNONYMS table documentation:
-#'   <https://www.fishbase.se/manual/english/FishBaseThe_SYNONYMS_Table.htm>
+#' * [run_pipeline()] — calls this function as the first validation step
+#' * [process_records()] — receives the validated output of this function
+#' * [generate_summary()] — also consumes the validated output
+#' * Reference data documentation: <https://example.org/reference-data-docs>
 #'
 #' @import dplyr
 #' @import cli
 #' @importFrom magrittr %>%
 #' @export
-clean_fb_slb_synonyms <- function(the_df, the_snapshot, the_server) {
+clean_validate_input <- function(the_df, the_version, the_source) {
   # function body
 }
 ```
@@ -413,13 +391,18 @@ clean_fb_slb_synonyms <- function(the_df, the_snapshot, the_server) {
   that belongs in `@details`
 - **Do not** add `##` subsections in `@details` unless there are genuinely
   multiple distinct conceptual sections
-- **Do not** add `@md` tags to individual blocks — markdown is enabled
+- **Do not** add `@md` tags to individual blocks when markdown is enabled
   package-wide via `Roxygen: list(markdown = TRUE)` in DESCRIPTION
 - **Do not** use `@examples`, `@inherit`, or `@family` — these are not used
-  in this package
+  in lab packages
 - **Do not** omit `@export` — every function in this package is exported
 - **Do not** silently drop unverifiable content when updating existing docs —
   flag it to the developer instead
+- **Do not** include functions in `@seealso` that are only indirectly related
+  (connected via an intermediate function) — use `@details` for pipeline
+  narrative instead
+- **Do not** copy import tags from another function without checking the
+  function body — only document imports actually used
 
 ---
 
@@ -427,9 +410,8 @@ clean_fb_slb_synonyms <- function(the_df, the_snapshot, the_server) {
 
 ### Shared parameters across functions
 
-`@inherit` is not used in this package. Where the same parameter (e.g.
-`the_snapshot`, `the_server`) appears across multiple functions, the current
-approach is undecided.
+`@inherit` is not used in lab packages. Where the same parameter appears
+across multiple functions, the current approach is undecided.
 
 > ⚠️ Open question for the development team: should shared `@param` text be
 > copy-pasted explicitly across all functions, or is there a preferred
