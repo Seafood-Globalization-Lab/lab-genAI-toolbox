@@ -16,9 +16,9 @@ git submodule add https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox
 ## Update tool box in your project repo
 
 ```bash
-cd .artis-toolbox
+cd .lab-genAI-toolbox
 git pull          # fetches latest toolbox commits, moves pointer to new SHA
 cd ..
-git add .lab-genAI-toolbox    # stages the new SHA pointer in ARTIS
+git add .lab-genAI-toolbox    # stages the new SHA pointer in your project
 git commit -m "chore: update toolbox to vx.x"
 ```
