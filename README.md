@@ -10,7 +10,7 @@ Run this in your terminal to clone the toolbox repo into your active repo as a h
 This records a pointer to a specific commit SHA of the toolbox repo. 
 
 ```bash
-git submodule add https://github.com/Seafood-Globaliozation-Lab/lab-genAI-toolbox .lab-genAI-toolbox
+git submodule add https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox .lab-genAI-toolbox
 ```
 
 ## Update tool box in your repo
