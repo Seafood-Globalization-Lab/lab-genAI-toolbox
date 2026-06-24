@@ -1,9 +1,14 @@
 ---
-skill: lab-roxygen2-function-documentation
-version: 0.2.0
-last_updated: 2026-06-18
-applies_to: any R package in the lab
-authors: [theamarks]
+name: roxygen2-function-documentation
+description: Write and update well-structured roxygen2 documentation for R package functions. Use when the user asks to write, update, or draft a roxygen2 header for a function. 
+license: MIT
+metadata:
+  author:
+    - name: Althea Marks
+      orcid: 0000-0002-9370-9128
+      url: https://github.com/theamarks/
+  repository: https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox
+  version: 0.3.0
 ---
 
 ## Purpose

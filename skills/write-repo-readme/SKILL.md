@@ -1,5 +1,5 @@
 ---
-name: repo-readme
+name: write-repo-readme
 description: Generate a structured README.md for a code repository. Use when asked to document a repo, write a README, or create repository documentation. Outputs a single markdown code chunk.
 ---
 

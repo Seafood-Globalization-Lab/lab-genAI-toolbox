@@ -1,35 +1,33 @@
 ---
 name: give-genai-credit
-description: Record and format GenAI attribution for code commits, work logs, file headers, and research outputs. Use when documenting AI model contributions to any project artifact.
+description: Create and format an AI attribution statement for code commits, work logs, file headers, readmes, reports, papers and other scientific research outputs. Use when users want to document, track, record, update or account for AI contributions to any project artifact to supports transparency, reproducibility, auditability of AI-assisted work.
 allowed-tools: Bash, Read
+license: MIT
 metadata:
   author:
     - name: Althea Marks
       orcid: 0000-0002-9370-9128
       url: https://github.com/theamarks/
-      role:
-        - conceptualization
-        - software
-        - methodology
   repository: https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox
   version: 1.0
   last_updated: 2026-06-23
-license: MIT
 ---
 
 # GenAI Attribution
 
-Record and format attribution for Generative AI contributions to project
-artifacts — including code commits, work logs, file headers, and research
-outputs. Consistent attribution supports transparency, reproducibility,
-and auditability of AI-assisted work.
+A skill for documenting and classifying meaningful generative AI contributions to any artifact produced in a standardized format.
 
-## Overview
+At a high level, the process of giving generative AI attribution goes like this:
 
-Any artifact produced with meaningful AI assistance should carry
-attribution identifying the model, version, access point, and tooling
-used. This skill provides standard templates for each output context and
-a workflow for gathering required information.
+- identify the attribution fields (required field are a priority, then option fields if they apply)
+- Review the work session to help evaluate what kinds of contributions the AI made and classify them into the CRediT taxonomy.
+- Use attribution template to format and record the AI contributions
+- Ask user to review and tweak any misclassifications, reclassify, and repeat until satisfied
+- Provide the user with a code chunk to copy and paste into their artifact. 
+
+Your job when using this skill is to assist the user evaluate, characterize, and record how they used generative AI in their workflow, and prompt them for their evaluation of your CRediT assignments. You may need to clarify with the user what "chunk" of work they want to evaluate for AI attribution, or worksession. For instance, the user could say "provide me with an overview of the work you did", You can help narrow down what they mean, is it the new feature on this branch? Is it this specific chat session? etc. 
+
+IF the output attribution format is unclear from the users prompt, ask something along the lines of if they would the attribution recorded for a git commit message, a disclousure statement, or a detailed contribution table. 
 
 Attribution in this skill is aligned with the
 [FORCE11 Software Citation Principles](https://doi.org/10.7717/peerj-cs.86)
@@ -37,6 +35,7 @@ Attribution in this skill is aligned with the
 with a unique identifier, version, location, and contributor role. The
 [CRediT contributor taxonomy](https://doi.org/10.3789/ansi.niso.z39.104-2022) is used to
 document the nature of AI contributions.
+
 
 ## Attribution Fields
 
@@ -98,14 +97,15 @@ See <https://credit.niso.org/implementing-credit/> for full implementation guida
 
 ### Git commit footer
 
-Place at the end of the commit body after a blank line. Use the
-`git-commit-summary` companion skill for full commit message formatting.
+Place at the end of the commit body after a blank line. May be also used for READMEs or other technical documentation. 
 
 ```
-Generated with <model> <model_version> (<provider>) via <interface> in <platform>
-Model: <model_identifier-or-doi>
-CRediT: <role> — <uri>; <role> — <uri>
-Toolbox: <toolbox-doi-or-github-tree-url>
+-- AI-assisted or generated content --
+model: <model> <model_version> (<provider>) <model_identifier-or-doi>
+access: <interface> in <platform>
+date: <date>
+CRediT attributions: <role>; <role>
+Tools: <toolbox-doi-or-github-tree-url>
 ```
 
 If multiple CRediT roles apply, list each separated by `;` on the same line.
@@ -114,85 +114,13 @@ the GitHub tree URL (`https://github.com/<org>/<repo>/tree/<hash>`).
 
 **Example:**
 ```
-Generated with Claude Sonnet 4.6 (Anthropic) via Posit Assistant in Positron 2026.06.0
-Model: https://www.anthropic.com/claude/sonnet
-CRediT: Software — https://credit.niso.org/contributor-roles/software/; Writing – original draft — https://credit.niso.org/contributor-roles/writing-original-draft/
-Toolbox: https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox/tree/0aadf27
+-- AI-assisted or generated content --
+model: Claude Sonnet 4.6 (Anthropic) https://www.anthropic.com/claude/sonnet
+access: Posit Assistant in Positron 2026.06.0
+date: 2026-06-23
+CRediT attributions: Software; Data Curation
+Tools: https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox/tree/0aadf27
 ```
-
----
-
-### Work log entry
-
-A single header line for append-only session logs (e.g. `WORKLOG.md`),
-followed by a detail block.
-
-```
-## <date> | <model> <model_version> | <interface> | <platform>
-**CRediT:**
-- <role> — <uri>
-- <role> — <uri>
-**Model:** <model_identifier-or-doi>
-**Toolbox:** <toolbox-doi-or-github-tree-url>
-```
-
-**Example:**
-```
-## 2026-06-23 | Claude Sonnet 4.6 | Posit Assistant | Positron 2026.06.0
-**CRediT:**
-- Software — https://credit.niso.org/contributor-roles/software/
-- Writing – original draft — https://credit.niso.org/contributor-roles/writing-original-draft/
-**Model:** https://www.anthropic.com/claude/sonnet
-**Toolbox:** https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox/tree/0aadf27
-```
-
----
-
-### File header comment
-
-A file header is a block of comments placed at the very top of a source
-file, before any code. It provides **persistent attribution that stays
-with the file** regardless of git history — attribution that travels with
-the file if it is copied, shared, or viewed outside the repository.
-
-**When to use a file header:**
-- New files created primarily by AI assistance
-- Standalone scripts or modules where the AI contribution is substantial
-
-**When NOT to use a file header:**
-- Incremental edits to long-standing files with many contributors — use
-  commit attribution instead, which is more accurate about scope
-- Files where the header would misrepresent the extent of AI contribution
-
-Format the comment for the file's language:
-
-**R:**
-```r
-# Generated with <model> <model_version> (<provider>) via <interface> in <platform>
-# Model: <model_identifier-or-doi>
-# CRediT: <role> — <uri>
-# CRediT: <role> — <uri>
-```
-
-**Python:**
-```python
-# Generated with <model> <model_version> (<provider>) via <interface> in <platform>
-# Model: <model_identifier-or-doi>
-# CRediT: <role> — <uri>
-# CRediT: <role> — <uri>
-```
-
-Add one `# CRediT:` line per assigned role.
-
-**Example (R):**
-```r
-# Generated with Claude Sonnet 4.6 (Anthropic) via Posit Assistant in Positron 2026.06.0
-# Model: https://www.anthropic.com/claude/sonnet
-# CRediT: Software — https://credit.niso.org/contributor-roles/software/
-# CRediT: Writing – original draft — https://credit.niso.org/contributor-roles/writing-original-draft/
-```
-
----
 
 ### Research output disclosure
 
@@ -215,7 +143,6 @@ This codebase was developed with the assistance of Claude Sonnet 4.6
 https://www.anthropic.com/claude/sonnet.
 ```
 
----
 
 ### CRediT table row
 
@@ -227,14 +154,14 @@ One row per CRediT role. If the AI contributed multiple roles, add a row
 for each.
 
 ```
-| <task> | [<credit_role>](<credit_role_uri>) | <model> | <model_version> |
-| <task> | [<credit_role>](<credit_role_uri>) | <model> | <model_version> |
+| <task> | [<credit_role>](<credit_role_uri>) | <model> | <model_version> | <provider> | <interface> | <platform> | <date> |
+| <task> | [<credit_role>](<credit_role_uri>) | <model> | <model_version> | <provider> | <interface> | <platform> | <date> |
 ```
 
 **Example:**
 ```
-| Code refactoring | [Software](https://credit.niso.org/contributor-roles/software/) | Claude Sonnet | 4.6 |
-| Roxygen documentation | [Writing – original draft](https://credit.niso.org/contributor-roles/writing-original-draft/) | Claude Sonnet | 4.6 |
+| Code refactoring | [Software](https://credit.niso.org/contributor-roles/software/) | Claude Sonnet | 4.6 | Anthropic | Posit Assistant | Positron 2026.06.0 | 2026-06-23 |
+| Roxygen documentation | [Writing – original draft](https://credit.niso.org/contributor-roles/writing-original-draft/) | Claude Sonnet | 4.6 | Anthropic | Posit Assistant | Positron 2026.06.0 | 2026-06-23 |
 ```
 
 ---
@@ -252,7 +179,9 @@ own version, and incorrect version attribution undermines reproducibility.
 Before gathering other fields, review the session history and assign all
 applicable CRediT roles using `CREDIT-ROLES-REFERENCE.md`:
 
-1. Read through what was done in the session.
+1. Read through what was done in the session or the piece of work the user specified.
+2. Make the distinction between what was prompted or proposed by the user and what 
+   was novel conent creation or contributions by the generative AI model. 
 2. Work through the self-assessment checklist in `CREDIT-ROLES-REFERENCE.md`.
 3. Assign **all roles that genuinely apply** — multiple roles are expected
    and encouraged for typical GenAI sessions.
@@ -302,21 +231,17 @@ in the attribution rather than omitting the field:
 | Context                  | Template                   |
 |--------------------------|----------------------------|
 | Git commit               | Git commit footer          |
-| Session log              | Work log entry             |
-| New source file          | File header comment        |
-| README / paper / report  | Research output disclosure |
+| README / paper / report / poster / website | Research output disclosure |
 | CRediT attribution table | CRediT table row           |
 
-A single session may produce multiple artifacts. Apply attribution to
-each independently — a commit footer, a work log entry, and a file
-header may all be appropriate for the same session.
+A single session may produce multiple artifacts. 
 
 ### Step 6 — Format and return
 
 Fill in the chosen template(s) with the gathered fields. Return
 formatted attribution blocks ready to copy or insert. Do not leave
 required fields blank; if a value is genuinely unavailable, note it
-explicitly (e.g. `model_identifier: not available`).
+explicitly (e.g. `model_identifier: not available`) and follow up with the user.
 
 ## Notes
 
@@ -331,8 +256,6 @@ explicitly (e.g. `model_identifier: not available`).
 - **CRediT is required** for all attribution contexts. It makes AI
   contributions machine-readable and interoperable with existing scholarly
   attribution infrastructure.
-- This skill is designed to be used alongside the `git-commit-summary`
-  companion skill for git commit attribution.
 
 ## References
 

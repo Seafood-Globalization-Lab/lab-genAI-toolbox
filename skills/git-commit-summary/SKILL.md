@@ -2,13 +2,14 @@
 name: git-commit-summary
 description: Write concise, well-structured git commit messages following the Conventional Commits specification. Use when the user asks to write, draft, summarize, or format a git commit message.
 allowed-tools: Read, Bash
+license: MIT
 metadata:
   authors:
-    - name: theamarks
-      orcid: "https://orcid.org/0000-0002-9370-9128"
+    - name: Althea Marks
+      orcid: 0000-0002-9370-9128
+      url: https://github.com/theamarks/
   version: 1.0
   last_updated: 2026-06-23
-license: MIT
 ---
 
 # Git Commit Summary
