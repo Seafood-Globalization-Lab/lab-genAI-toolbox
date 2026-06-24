@@ -1,5 +1,5 @@
 # lab-genAI-toolbox
-A collection of tools and resources produced from the Seafood Globalization Lab's ongoing discussion of our GenAI policy. 
+A collection of generative AI tools inspired from and aligned with the Seafood Globalization Lab's ongoing discussion of our GenAI policy. 
 
 > [!CAUTION]
 > As of 2026-06-18 this is very much a work in progress and all outlined features may not be fully working. As always, careful human review and editing of GenAI work is required.
