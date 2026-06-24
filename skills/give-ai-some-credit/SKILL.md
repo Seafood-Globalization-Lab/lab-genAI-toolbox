@@ -1,5 +1,5 @@
 ---
-name: give-genai-credit
+name: give-ai-some-credit
 description: Create and format an AI attribution statement for code commits, work logs, file headers, readmes, reports, papers and other scientific research outputs. Use when users want to document, track, record, update or account for AI contributions to any project artifact to supports transparency, reproducibility, auditability of AI-assisted work.
 allowed-tools: Bash, Read
 license: MIT
