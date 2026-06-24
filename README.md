@@ -4,7 +4,7 @@ A collection of tools and resources produced from the Seafood Globalization Lab'
 > [!CAUTION]
 > As of 2026-06-18 this is very much a work in progress and all outlined features may not be fully working. As always, careful human review and editing of GenAI work is required.
 
-## Add this toolbox to your project repo
+## Add this tool box to your project repo
 
 Run this in your terminal to clone the toolbox repo into your active repo as a hidden folder. 
 This records a pointer to a specific commit SHA of the toolbox repo. 
@@ -13,7 +13,7 @@ This records a pointer to a specific commit SHA of the toolbox repo.
 git submodule add https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox .lab-genAI-toolbox
 ```
 
-## Update tool box in your project repo
+## Update this tool box in your project repo
 
 ```bash
 cd .lab-genAI-toolbox
