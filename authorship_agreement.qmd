@@ -1,0 +1,84 @@
+---
+title: "Give AI some CRediT"
+subtitle: "Collaborator Agreement for use of Generative AI in Scientific Research Outputs"
+date: today
+author: 
+  - name: Althea Marks
+    orcid:
+    affiliation:
+    - name: University of Washington
+      city: Seattle
+      state: Washington
+  - name: Jessica Gephart
+    orcid:
+    affiliation:
+    - name: University of Washington
+      city: Seattle
+      state: Washington
+  - name: Lab Members
+keywords:
+  - attribution
+  - open science
+  - CRediT
+  - Contributor Role Taxonomy
+  - Generative AI
+  - Artificial Intelligence 
+abstract: |
+  This document is a template for scientific collaborators to use at the beginning of a project to facilitate transparent and congruent generative AI use in the project. 
+license: "CC BY"
+format:
+  pdf:
+    documentclass: article
+    papersize: letter
+    geometry:
+      - margin=1in
+    toc: false
+    colorlinks: true
+---
+
+## Purpose
+
+The Contributor Role Taxonomy (CRediT) is the scaffolding to guide collaborator discussion and agreement about the use of GenAI tools in the shared research outputs. 
+
+## Guide to Use and Discussions
+
+
+## Agreement Checklists
+
+```{=latex}
+\renewcommand{\arraystretch}{1.4}
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+library(kableExtra)
+library(readr)
+
+read_csv("credit_roles.csv", show_col_types = FALSE) |>
+  kbl(
+    booktabs = TRUE,
+    longtable = TRUE,
+    col.names = c("Role", "Role Definition", "Example Tasks")
+  ) |>
+  kable_styling(
+    latex_options = c("repeat_header"),
+    full_width = TRUE
+  ) |>
+  column_spec(1, width = "2.5cm") |>
+  column_spec(2, width = "5cm") |>
+  column_spec(3, width = "8cm") |>
+  collapse_rows(columns = 1:2, valign = "top") |>
+  row_spec(0, extra_latex_after = "\\addlinespace[4pt]")
+```
+
+## Document Each GenAI Contribution 
+
+This will serve as running documentation of GenAI work sessions and how it was used to contribute to the scientific research outputs. 
+
+| **AI Contribution** | **CRediT Role** | **Model & Version ** | **Access Interface** | **Access Platform** |  **Agents, Skills and Prompts** | **User** | **Date** |
+|---|---|---|---|---|---|---|---|
+| Code refactoring and documentation | Software | Claude Sonnet 4.6 | Positron Assistant | Positron | None | Althea Marks | 2026-05-21 |
+| Convert markdown to csv | Software | Claude Sonnet 4.6 | Posit Assistant | Positron | None | Althea Marks | 2026-07-01 |
