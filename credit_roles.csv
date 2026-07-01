@@ -33,6 +33,8 @@ Software,"Programming, software development; designing computer programs; implem
 Software,"Programming, software development; designing computer programs; implementation of the computer code and supporting algorithms; testing of existing code components.","Developing, maintaining, managing and optimizing digital infrastructure, libraries, and databases."
 Software,"Programming, software development; designing computer programs; implementation of the computer code and supporting algorithms; testing of existing code components.","Conducting data extraction, data mining, and parsing content for qualitative or quantitative data collection and analysis."
 Software,"Programming, software development; designing computer programs; implementation of the computer code and supporting algorithms; testing of existing code components.","Ensuring interoperability, functionality, and scalability of code, databases, systems or platforms across different environments."
+Software,,Documentation in code and user facing
+Software,,Generating code
 Supervision,"Oversight and leadership responsibility for the research activity planning and execution, including mentorship external to the core team.","Overseeing researchers and other team members by setting milestones, tracking progress, ensuring quality of deliverables, and promoting adherence to ethics and integrity norms."
 Supervision,"Oversight and leadership responsibility for the research activity planning and execution, including mentorship external to the core team.","Teaching, training, moderating and providing personal or professional advice to team members."
 Supervision,"Oversight and leadership responsibility for the research activity planning and execution, including mentorship external to the core team.","Guiding teams in refining methods, interpreting results, and addressing interpersonal challenges."
@@ -41,10 +43,15 @@ Validation,"Verification, whether as a part of the activity or separate, of the 
 Validation,"Verification, whether as a part of the activity or separate, of the overall replication/reproducibility of results/experiments and other research outputs.",Conducting pilot tests or preliminary studies to validate data collection instruments and protocols.
 Validation,"Verification, whether as a part of the activity or separate, of the overall replication/reproducibility of results/experiments and other research outputs.",Appraising studies included in systematic reviews and ensuring compliance with established review standards or reporting frameworks.
 Validation,"Verification, whether as a part of the activity or separate, of the overall replication/reproducibility of results/experiments and other research outputs.",Testing computational models or simulations against known outcomes for accuracy.
+Validation,,Using adversarial or review GenAI agents to validate and check workflow and results
 Visualization,"Preparation, creation and/or presentation of the published work, specifically visualization/data presentation.","Using data to create charts, graphs or figures."
 Visualization,"Preparation, creation and/or presentation of the published work, specifically visualization/data presentation.",Creating videos and other interactive media for communicating the findings.
+Visualization,,"Generating code to create charts, graphs or figures"
+Visualization,,"Using free text prompts to generate charts, graphs or figures"
 Writing - original draft,"Preparation, creation and/or presentation of the published work, specifically writing the initial draft (including substantive translation).",Creating the first and full version of an article.
 Writing - original draft,"Preparation, creation and/or presentation of the published work, specifically writing the initial draft (including substantive translation).",Drafting substantial original text within a section or across sections in an article.
+Writing - review & editing,,Translating writing from one language to another
+Writing - review & editing,,Creating figure captions
 Writing - review & editing,"Preparation, creation and/or presentation of the published work by those from the original research group, specifically critical review, commentary or revision - including pre- or post-publication stages.","Reviewing, copy-editing, refining language and providing comments and suggestions."
 Writing - review & editing,"Preparation, creation and/or presentation of the published work by those from the original research group, specifically critical review, commentary or revision - including pre- or post-publication stages.",Revising content based on feedback from internal and external reviewers.
 Writing - review & editing,"Preparation, creation and/or presentation of the published work by those from the original research group, specifically critical review, commentary or revision - including pre- or post-publication stages.","Providing review input of figures, tables, and supplementary materials."
