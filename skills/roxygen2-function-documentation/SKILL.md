@@ -315,6 +315,11 @@ Side-effect case:
 
 ## Workflow: Updating Existing Documentation
 
+> **Scope boundary:** This skill covers the Roxygen2 header **only**. Do not
+> modify, refactor, or correct any function body code — even if you spot a bug,
+> an inconsistency, or a return list mismatch. Document what the function
+> currently does and flag discrepancies in your text response. 
+
 1. Read the current roxygen2 block in full
 2. Read the current function body in full
 3. Update any tags where the function body has changed
@@ -408,6 +413,10 @@ clean_validate_input <- function(the_df, the_version, the_source) {
   narrative instead
 - **Do not** copy import tags from another function without checking the
   function body — only document imports actually used
+- **Do not** modify, refactor, or correct any function body code — even if you
+  identify a bug, a mismatched return list, or an inconsistency between the
+  function and its caller. Document what the function currently does and surface
+  discrepancies in `@note` for the developer to resolve
 
 ---
 
