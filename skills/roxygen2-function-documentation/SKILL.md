@@ -114,6 +114,7 @@ title (implicit, first line)
 @seealso
 @import / @importFrom
 @export
+documentation footer (always last)
 ```
 
 ---
@@ -309,7 +310,38 @@ Side-effect case:
 ### `@export`
 
 - All functions in this package are exported
-- Always include `@export` as the final tag
+- Always include `@export` before the documentation footer
+
+---
+
+### Documentation footer
+
+Always append a footer after `@export` as the final lines of the roxygen2
+block. The footer uses a markdown horizontal rule followed by an italic
+attribution line:
+
+```r
+#'
+#' ---
+#'
+#' *Documentation generated with `claude-sonnet-4-5` using the
+#' [`roxygen2-function-documentation`](https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox/commit/10708814459d410f719daebc579437e01a849fd2)
+#' skill (commit `1070881`).*
+```
+
+- **Model identifier:** State your own model name (e.g. `claude-sonnet-4-5`)
+  as it is known to you. Use the API-style model identifier (lowercase,
+  hyphenated), not a marketing name. Note that patch-level version strings
+  are not available from self-knowledge and should not be guessed.
+- **Commit hash:** Before writing the footer, run
+  `git -C <path-to-.lab-genAI-toolbox> log -1 --format="%H %h"` to get both
+  the full and short commit hashes of the toolbox submodule. Use the **full
+  SHA** to construct the commit-specific GitHub URL
+  (`https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox/commit/<full-sha>`)
+  and the **short SHA** as the display text. The path to `.lab-genAI-toolbox`
+  is relative to the project root — resolve it from the workspace working
+  directory.
+- Do not omit this footer when writing or updating documentation with this skill
 
 ---
 
@@ -388,6 +420,12 @@ Side-effect case:
 #' @import cli
 #' @importFrom magrittr %>%
 #' @export
+#'
+#' ---
+#'
+#' *Documentation generated with `claude-sonnet-4-5` using the
+#' [`roxygen2-function-documentation`](https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox/commit/10708814459d410f719daebc579437e01a849fd2)
+#' skill (commit `1070881`).*
 clean_validate_input <- function(the_df, the_version, the_source) {
   # function body
 }
@@ -406,6 +444,9 @@ clean_validate_input <- function(the_df, the_version, the_source) {
 - **Do not** use `@examples`, `@inherit`, or `@family` — these are not used
   in lab packages
 - **Do not** omit `@export` — every function in this package is exported
+- **Do not** omit the documentation footer — always include it as the final
+  lines of the roxygen2 block, with the short commit hash retrieved via git
+  before writing
 - **Do not** silently drop unverifiable content when updating existing docs —
   flag it to the developer instead
 - **Do not** include functions in `@seealso` that are only indirectly related
