@@ -10,7 +10,7 @@ metadata:
       url: https://github.com/theamarks/
   repository: https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox
   version: 1.0
-  last_updated: 2026-06-23
+  last_updated: 2026-09-17
 ---
 
 # GenAI Attribution
@@ -41,17 +41,16 @@ document the nature of AI contributions.
 
 ### Required
 
-| Field            | FORCE11 Principle          | Description                                               | Example                                                  |
-|------------------|----------------------------|-----------------------------------------------------------|----------------------------------------------------------|
-| `model`          | Specificity, Unique ID     | AI model name                                             | `Claude Sonnet`                                          |
-| `model_version`  | Specificity                | Model version or release identifier                       | `4.6`                                                    |
-| `provider`       | Credit and Attribution     | Company or organization that develops the model           | `Anthropic`                                              |
-| `model_identifier` | Unique Identification    | Persistent, resolvable identifier for the specific model version. DOI preferred; stable model card URL acceptable. | `https://www.anthropic.com/claude/sonnet` |
-| `model_location` | Accessibility              | Where the model is accessed or distributed                | `https://huggingface.co/meta-llama/Meta-Llama-3-8B`     |
-| `interface`      | Accessibility              | Software or product used to interact with the model       | `Posit Assistant`                                        |
-| `platform`       | Accessibility              | IDE or environment and its version                        | `Positron 2026.06.0`                                     |
-| `credit_role`    | Credit and Attribution     | One or more CRediT contributor roles describing the AI's contribution. Assign all that apply — see CRediT Taxonomy and `CREDIT-ROLES-REFERENCE.md`. | `Software; Writing – original draft` |
-| `credit_role_uri`| Unique Identification      | Persistent URI for each assigned CRediT role              | `https://credit.niso.org/contributor-roles/software/`   |
+| Field              | FORCE11 Principle          | Description                                               | Example                                                  |
+|--------------------|----------------------------|-----------------------------------------------------------|----------------------------------------------------------|
+| `model`            | Specificity, Unique ID     | Provider API model tag — not the human-readable name. For Anthropic, this is the API model identifier. | `claude-sonnet-4-6`          |
+| `provider`         | Credit and Attribution     | Company or organization that develops the model           | `Anthropic`                                              |
+| `model_identifier` | Unique Identification      | Persistent, resolvable identifier for the specific model version. DOI preferred; stable model card URL acceptable. | `https://www.anthropic.com/claude/sonnet` |
+| `model_location`   | Accessibility              | Where the model is accessed or distributed                | `https://huggingface.co/meta-llama/Meta-Llama-3-8B`     |
+| `interface`        | Accessibility              | Software or product used to interact with the model, including its version | `Posit Assistant 1.4.1`               |
+| `platform`         | Accessibility              | IDE or environment and its version                        | `Positron 2026.09.0`                                     |
+| `credit_role`      | Credit and Attribution     | One or more CRediT contributor roles describing the AI's contribution. Assign all that apply — see CRediT Taxonomy and `CREDIT-ROLES-REFERENCE.md`. | `Software; Writing – original draft` |
+| `credit_role_uri`  | Unique Identification      | Persistent URI for each assigned CRediT role              | `https://credit.niso.org/contributor-roles/software/`   |
 
 ### Optional
 
@@ -101,8 +100,8 @@ Place at the end of the commit body after a blank line. May be also used for REA
 
 ```
 -- AI-assisted or generated content --
-model: <model> <model_version> (<provider>) <model_identifier-or-doi>
-access: <interface> in <platform>
+model: <model-api-tag> (<provider>) <model_identifier-or-doi>
+access: <interface> <interface_version> in <platform> <platform-version>
 date: <date>
 CRediT attributions: <role>; <role>
 Tools: <toolbox-doi-or-github-tree-url>
@@ -115,11 +114,11 @@ the GitHub tree URL (`https://github.com/<org>/<repo>/tree/<hash>`).
 **Example:**
 ```
 -- AI-assisted or generated content --
-model: Claude Sonnet 4.6 (Anthropic) https://www.anthropic.com/claude/sonnet
-access: Posit Assistant in Positron 2026.06.0
-date: 2026-06-23
+model: claude-sonnet-4-6 (Anthropic) https://www.anthropic.com/claude/sonnet
+access: Posit Assistant 1.4.1 in Positron 2026.09.0
+date: 2026-09-17
 CRediT attributions: Software; Data Curation
-Tools: https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox/tree/0aadf27
+Tools: https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox/tree/ef0496a
 ```
 
 ### Research output disclosure
@@ -128,17 +127,17 @@ For README files, papers, or reports requiring a prose disclosure. Include
 a formal citation of the model where possible.
 
 ```
-This [output type] was developed with the assistance of <model> <model_version>
-(<provider>), accessed via <interface> in <platform> on <date>.
+This [output type] was developed with the assistance of <model-api-tag>
+(<provider>), accessed via <interface> <interface_version> in <platform> on <date>.
 The AI contributed to the following CRediT role(s): <credit_role(s)>.
 Model identifier: <model_identifier>.
 ```
 
 **Example:**
 ```
-This codebase was developed with the assistance of Claude Sonnet 4.6
-(Anthropic), accessed via Posit Assistant in Positron 2026.06.0 on
-2026-06-23. The AI contributed to the following CRediT role(s): Software
+This codebase was developed with the assistance of claude-sonnet-4-6
+(Anthropic), accessed via Posit Assistant 1.4.1 in Positron 2026.09.0 on
+2026-09-17. The AI contributed to the following CRediT role(s): Software
 (https://credit.niso.org/contributor-roles/software/). Model identifier:
 https://www.anthropic.com/claude/sonnet.
 ```
@@ -154,25 +153,59 @@ One row per CRediT role. If the AI contributed multiple roles, add a row
 for each.
 
 ```
-| <task> | [<credit_role>](<credit_role_uri>) | <model> | <model_version> | <provider> | <interface> | <platform> | <date> |
-| <task> | [<credit_role>](<credit_role_uri>) | <model> | <model_version> | <provider> | <interface> | <platform> | <date> |
+| <task> | [<credit_role>](<credit_role_uri>) | <model-api-tag> | <provider> | <interface> <interface_version> | <platform> | <date> |
+| <task> | [<credit_role>](<credit_role_uri>) | <model-api-tag> | <provider> | <interface> <interface_version> | <platform> | <date> |
 ```
 
 **Example:**
 ```
-| Code refactoring | [Software](https://credit.niso.org/contributor-roles/software/) | Claude Sonnet | 4.6 | Anthropic | Posit Assistant | Positron 2026.06.0 | 2026-06-23 |
-| Roxygen documentation | [Writing – original draft](https://credit.niso.org/contributor-roles/writing-original-draft/) | Claude Sonnet | 4.6 | Anthropic | Posit Assistant | Positron 2026.06.0 | 2026-06-23 |
+| Code refactoring | [Software](https://credit.niso.org/contributor-roles/software/) | claude-sonnet-4-6 | Anthropic | Posit Assistant 1.4.1 | Positron 2026.09.0 | 2026-09-17 |
+| Roxygen documentation | [Writing – original draft](https://credit.niso.org/contributor-roles/writing-original-draft/) | claude-sonnet-4-6 | Anthropic | Posit Assistant 1.4.1 | Positron 2026.09.0 | 2026-09-17 |
 ```
 
 ---
 
 ## Workflow
 
+Start every session by asking the user which mode they want:
+
+> **Quick footer** — generate the git commit attribution footer only, no CRediT role assessment.
+> **Full CRediT attribution** — evaluate roles and produce one or more attribution templates (commit footer, research disclosure, or CRediT table).
+
+---
+
+### Quick footer path
+
+Gather the minimum fields and return the formatted block ready to paste. Skip the CRediT assessment entirely.
+
+1. Ask the user to confirm the **model API tag** (e.g. `claude-sonnet-4-6`) — never guess.
+2. Confirm **provider** (e.g. `Anthropic`) and **model identifier URL**.
+3. Confirm **interface and version** (e.g. `Posit Assistant 1.4.1`).
+4. Confirm **platform and version** (e.g. `Positron 2026.09.0`).
+5. Retrieve the **toolbox commit hash** if a skill or prompt library was used (see Step 4 of the full path below). Omit the `Tools` line if no toolbox was used.
+6. Return the formatted footer:
+
+```
+-- AI-assisted or generated content --
+model: <model-api-tag> (<provider>) <model_identifier>
+access: <interface> <interface_version> in <platform>
+Tools: <toolbox-github-tree-url>
+```
+
+---
+
+### Full CRediT attribution path
+
+Follow Steps 1–6 below.
+
 ### Step 1 — Identify the model
 
-Ask the user to confirm the exact model name and version. **Do not
-assume or guess the version** — the AI cannot reliably self-report its
-own version, and incorrect version attribution undermines reproducibility.
+Ask the user to confirm the provider API model tag — not the
+human-readable name. For Anthropic models, this is the API model
+identifier (e.g. `claude-sonnet-4-6`), visible in Posit Assistant
+settings or the provider's API documentation. **Do not assume or guess**
+— the AI cannot reliably self-report its own identifier, and incorrect
+attribution undermines reproducibility.
 
 ### Step 2 — Self-assess CRediT roles
 
@@ -208,10 +241,11 @@ in the attribution rather than omitting the field:
 3. **Model location** — where the model is accessed or distributed, if
    different from the identifier. Note the distribution platform
    (e.g. `API`, `HuggingFace`, `Ollama`, `GitHub`, `Proprietary`).
-4. **Interface** — the software used to interact with the model
-   (e.g. `Posit Assistant`, `Claude.ai`, `ChatGPT`, `GitHub Copilot`, `API`).
-5. **Platform** — IDE or environment and version. In Positron this is
-   visible in the About dialog.
+4. **Interface** — the software used to interact with the model and its
+   version (e.g. `Posit Assistant 1.4.1`, `Claude.ai`, `ChatGPT`, `GitHub Copilot`, `API`).
+   In Positron, the Posit Assistant version is visible in the Extensions panel.
+5. **Platform** — IDE or environment and version (e.g. `Positron 2026.09.0`).
+   In Positron this is visible in the About dialog.
 
 ### Step 4 — Identify optional fields
 
@@ -245,8 +279,9 @@ explicitly (e.g. `model_identifier: not available`) and follow up with the user.
 
 ## Notes
 
-- **Model version must be user-supplied.** Always ask the user to
-  confirm — never infer or guess.
+- **Model API tag must be user-supplied.** Always ask the user to
+  confirm — never infer or guess. For Anthropic models, the API tag
+  (e.g. `claude-sonnet-4-6`) is visible in Posit Assistant settings.
 - **DOI is preferred for `model_identifier`** per FORCE11 Principle 3.
   For models without a DOI, a stable model card or release URL satisfies
   the Unique Identification principle as a fallback.

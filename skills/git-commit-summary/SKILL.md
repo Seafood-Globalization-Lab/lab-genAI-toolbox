@@ -9,7 +9,7 @@ metadata:
       orcid: 0000-0002-9370-9128
       url: https://github.com/theamarks/
   version: 1.0
-  last_updated: 2026-06-23
+  last_updated: 2026-09-17
 ---
 
 # Git Commit Summary
@@ -68,8 +68,8 @@ Choose the type that best describes the primary change:
 
 - Breaking changes: `BREAKING CHANGE: <description>`
 - Issue or PR references: `Closes #123`, `Refs #456`
-- Attribution lines (AI tools, companion skills): one line per tool,
-  placed last
+- AI attribution block, placed last — use the `give-ai-some-credit` skill
+  for format and field guidance
 
 ## Workflow
 
@@ -97,9 +97,8 @@ made, which assumption was violated, what the alternative was).
 ### Step 4 — Add footer lines
 
 Add any relevant issue references or attribution lines. If an AI
-assistant contributed to this work, add attribution in the footer using
-the `genai-attribution` companion skill if available, or include the
-model name, version, and tool used.
+assistant contributed, use the `give-ai-some-credit` skill to generate
+the attribution block and place it at the end of the footer.
 
 ## Example
 
@@ -112,8 +111,10 @@ refactor: replace synonym resolution loop with vectorized lookup
 - Add $synonym_resolution to function return list for audit trail
 - query_synonyms() and all other callers unchanged
 
-Generated with Claude Sonnet 4.6 (Anthropic) via Posit Assistant in Positron 2026.06.0
-lab-genAI-toolbox: 0aadf27
+-- AI-assisted or generated content --
+model: claude-sonnet-4-6 (Anthropic) https://www.anthropic.com/claude/sonnet
+access: Posit Assistant 1.4.1 in Positron 2026.09.0
+Tools: https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox/tree/ef0496a
 ```
 
 ## Notes
