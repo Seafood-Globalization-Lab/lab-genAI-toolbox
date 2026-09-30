@@ -112,9 +112,9 @@ title (implicit, first line)
 @return
 @note (if needed)
 @seealso
+documentation footer
 @import / @importFrom
 @export
-documentation footer (always last)
 ```
 
 ---
@@ -316,9 +316,10 @@ Side-effect case:
 
 ### Documentation footer
 
-Always append a footer after `@export` as the final lines of the roxygen2
-block. The footer uses a markdown horizontal rule followed by an italic
-attribution line:
+Place the footer **before** the `@import` / `@importFrom` tags and `@export`
+— never after `@export`. roxygen2 treats any `#'` lines following `@export`
+as arguments to that tag, which causes a parse error. The footer uses a
+markdown horizontal rule followed by an italic attribution line:
 
 ```r
 #'
@@ -327,6 +328,11 @@ attribution line:
 #' *Documentation generated with `claude-sonnet-4-5` using the
 #' [`roxygen2-function-documentation`](https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox/commit/10708814459d410f719daebc579437e01a849fd2)
 #' skill (commit `1070881`).*
+#'
+#' @import dplyr
+#' @import cli
+#' @importFrom magrittr %>%
+#' @export
 ```
 
 - **Model identifier:** State your own model name (e.g. `claude-sonnet-4-5`)
@@ -416,16 +422,17 @@ attribution line:
 #' * [generate_summary()] — also consumes the validated output
 #' * Reference data documentation: <https://example.org/reference-data-docs>
 #'
-#' @import dplyr
-#' @import cli
-#' @importFrom magrittr %>%
-#' @export
 #'
 #' ---
 #'
 #' *Documentation generated with `claude-sonnet-4-5` using the
 #' [`roxygen2-function-documentation`](https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox/commit/10708814459d410f719daebc579437e01a849fd2)
 #' skill (commit `1070881`).*
+#'
+#' @import dplyr
+#' @import cli
+#' @importFrom magrittr %>%
+#' @export
 clean_validate_input <- function(the_df, the_version, the_source) {
   # function body
 }
@@ -444,9 +451,10 @@ clean_validate_input <- function(the_df, the_version, the_source) {
 - **Do not** use `@examples`, `@inherit`, or `@family` — these are not used
   in lab packages
 - **Do not** omit `@export` — every function in this package is exported
-- **Do not** omit the documentation footer — always include it as the final
-  lines of the roxygen2 block, with the short commit hash retrieved via git
-  before writing
+- **Do not** omit the documentation footer — always include it immediately
+  before the `@import` / `@importFrom` tags and `@export`; placing it after
+  `@export` causes a roxygen2 parse error. Retrieve the short commit hash via
+  git before writing
 - **Do not** silently drop unverifiable content when updating existing docs —
   flag it to the developer instead
 - **Do not** include functions in `@seealso` that are only indirectly related
