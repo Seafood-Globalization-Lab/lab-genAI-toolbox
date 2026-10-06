@@ -123,9 +123,17 @@ git diff develop...HEAD
 From the commit log, extract:
 - **Short descriptions** for change summaries — synthesize, do not copy
   commit subjects verbatim
-- **Issue/PR references** — any `#NNN`, `Closes #NNN`, `Fixes #NNN`,
+- **Issue references** — any `#NNN`, `Closes #NNN`, `Fixes #NNN`,
   `Resolves #NNN` patterns found in subjects or bodies
 - **Approximate date range** of the work
+
+PR numbers rarely appear in commit messages. After gathering the commit
+log, ask the user:
+
+> "What is the PR number for this branch, if one exists?"
+
+If provided, append it to the branch subheading as `(#NNN)`. If the
+branch has no PR yet, omit it — do not invent one.
 
 Do **not** record or cite individual commit SHAs in the changelog entry.
 
@@ -142,7 +150,7 @@ category together.
 Write entries under a branch-name subheading using this structure:
 
 ```markdown
-### feature/branch-name
+### feature/branch-name (#NNN)
 
 #### Added
 
