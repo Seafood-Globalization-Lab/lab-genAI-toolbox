@@ -1,12 +1,13 @@
 ---
 name: extract-fao-hs6-descriptions
 description: >
-  Write the extract_fao_hs6_descriptions() R function for the artis package.
-  This function extracts the "Full description of fisheries and aquaculture products"
-  table from the FAO & WCO HS Codes handbook PDF into a tidy data frame with columns
-  hs_version, hs6, and description_orig. Use when adding or updating the FAO HS
-  reference table in the ARTIS pipeline, or when a new edition of the FAO handbook
-  is released.
+  Write or update the extract_fao_hs6_descriptions() R function for the artis package.
+  This function extracts the "Full description of fish and fish products" (or
+  "fisheries and aquaculture products") table from the FAO & WCO HS Codes handbook PDF
+  into a tidy data frame with columns hs_version, hs6, and description_orig.
+  Compatible with multiple HS editions (HS2017, HS2022, and future releases).
+  Use when adding or updating the FAO HS reference table in the ARTIS pipeline,
+  or when a new edition of the FAO handbook is released.
 allowed-tools: Read Bash Write Edit
 license: MIT
 metadata:
@@ -90,11 +91,11 @@ Use the full SHA for the roxygen2 footer URL and the short SHA as display text.
 The handbook is a typeset, two-column PDF (Adobe InDesign origin).
 It is divided into three sections:
 
-| Section | Content | Pages (HS2022 edition) |
+| Section | Content | Pages (varies by edition) |
 |---|---|---|
-| I | Species listed alphabetically with treatment × HS code lookup tables | 1–99 |
-| II | **Full description of fisheries and aquaculture products** — target section | 100–111 |
-| III | Species photographs and biological profiles | 112–end |
+| I | Species listed alphabetically with treatment × HS code lookup tables | early pages |
+| II | **Full description of fish and fish products** (HS2017) / **fisheries and aquaculture products** (HS2022) — target section | middle pages |
+| III | Species photographs and biological profiles (HS2022 only) | late pages |
 
 ### Section II layout
 
@@ -123,7 +124,10 @@ Each entry follows this pattern:
 
 Use `pdftools::pdf_text()` to extract all pages.
 
-**Start:** The first page containing `"Full description of fisheries and aquaculture products"`.
+**Start:** The first page containing `"Full description of fish"`. This prefix matches
+both editions:
+- HS2017: `"Full description of fish and fish products"`
+- HS2022: `"Full description of fisheries and aquaculture products"`
 
 **End:** Every Section II page carries the range header pattern. Scan forward
 from the start page; the last page that matches this pattern is the end of Section II:
@@ -133,9 +137,9 @@ range_header_pat <- "\\d{4}\\.\\d{2}\\s*-\\s*\\d{4}\\.\\d{2}"
 ```
 
 > **Important:** Do NOT use `"Photo credits"` or `"Pictures, basic information"` to
-> detect the Section II end. These phrases appear only at content pages 284+ (PDF page
-> 294+) in the HS2022 edition, and using them will pull Section III species photo pages
-> into the parse, inflating row counts to ~3,000.
+> detect the Section II end. These phrases appear near the end of some editions and
+> using them will pull Section III species photo pages into the parse, inflating
+> row counts dramatically.
 
 ### Column split detection
 
@@ -206,12 +210,13 @@ previous one) when:
 
 | Column | Type | Description |
 |---|---|---|
-| `hs_version` | character | HS nomenclature year, extracted from the PDF cover/citation text. Format: `"HS2022"`, `"HS2017"`. Extracted using `"Nomenclature\\s+(\\d{4})"` pattern. |
+| `hs_version` | character | HS nomenclature year, extracted from the PDF cover/citation text. Format: `"HS22"`, `"HS17"` (last 2 digits of year). Extracted using `"Nomenclature[^\\d]+(\\d{4})"` — the `[^\\d]+` tolerates en-dashes and other separators between "Nomenclature" and the year. |
 | `hs6` | character | 6-digit HS code with the period removed. `"0301.11"` → `"030111"` |
 | `description_orig` | character | Full description text as extracted from the PDF, whitespace-squished. Case is preserved — [clean_hs()] lowercases descriptions downstream. |
 
-Expected output for HS2022: **266 unique HS6 codes**, approximately **270–300 rows**
-(more rows than codes due to multi-description entries).
+Expected row and code counts vary by edition. For HS2022: ~266 unique HS6 codes,
+~270–300 rows. Counts will differ for other editions. Rows always exceed or equal
+unique codes due to multi-description entries.
 
 ---
 
@@ -248,10 +253,15 @@ The file structure is:
 extract_fao_hs6_descriptions <- function(pdf_path) { ... }
 ```
 
-Load the complete reference implementation from
-[`references/function-template.R`](references/function-template.R) — use it
-directly. Do not rewrite the parsing helpers from memory; the heuristics are
-precise and must match the reference exactly.
+Read the canonical implementation directly from the package:
+
+```
+R/extract_fao_hs6_descriptions.R
+```
+
+Do not rewrite the parsing helpers from memory — the heuristics are precise and
+the live file is always the ground truth. A separate `references/function-template.R`
+is intentionally not maintained to prevent the two copies drifting out of sync.
 
 ### Step 5 — Write the roxygen2 header
 
@@ -282,19 +292,18 @@ download.file("https://www.fao.org/3/cc6347en/cc6347en.pdf", pdf_tmp, mode = "wb
 result <- extract_fao_hs6_descriptions(pdf_tmp)
 ```
 
-Expected console output:
+Expected console output (HS2022 edition shown; page range and counts vary by edition):
 ```
 ✔ 310 pages read from PDF
-✔ HS version detected: "HS2022"
+✔ HS version detected: "HS22"
 ℹ Section II located on PDF pages 110–121
 ✔ ~270–300 description rows extracted across 266 unique HS6 codes
 ```
 
 Confirm:
-- `nrow(result)` is between 266 and 310
-- `dplyr::n_distinct(result$hs6)` is 266
+- `nrow(result)` is greater than `dplyr::n_distinct(result$hs6)` (more rows than codes)
 - No `hs6` values contain a period (`"."`)
-- `result$hs_version` is uniformly `"HS2022"`
+- `result$hs_version` is uniformly `"HS22"` (or the appropriate 2-digit year suffix for the edition used)
 
 ---
 
