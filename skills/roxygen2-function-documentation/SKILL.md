@@ -8,7 +8,7 @@ metadata:
       orcid: 0000-0002-9370-9128
       url: https://github.com/theamarks/
   repository: https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox
-  version: 0.3.0
+  version: 0.4.1
 ---
 
 ## Purpose
@@ -32,9 +32,8 @@ to establish package context. Extract the following from it:
 - How functions are organized — pipeline, module, utility, or other structure
 - Any domain-specific terminology, naming conventions, or key concepts
 
-This context is essential for writing accurate `@details` (pipeline narrative)
-and `@seealso` (direct relationships) sections. Do not begin documentation
-until this context is established.
+This context is essential for writing accurate `@details` and `@seealso`
+sections. Do not begin documentation until this context is established.
 
 ### If README.md is missing or insufficient
 
@@ -76,18 +75,16 @@ Look for:
 - Integrity checks, warnings, or validation logic (for `@details` subsections)
 - Manual correction blocks with any scoping conditions (for `@details`)
 - Any dropped or filtered rows with a specific rationale (for `@note`)
-- Calls to other package functions — both callers and callees (for `@seealso`)
 - Any external reference data or documentation URLs (for `@seealso`)
 
-### Step 2 — Identify the function's place in the package
+### Step 2 — Identify the function's behaviour and side effects
 
 Ask:
-- What function calls this one?
-- What functions does this one call?
 - Does it read from disk? Write to disk?
-- Is its output used by multiple downstream functions?
+- Does it validate, transform, or aggregate data?
+- Are there data quality checks, filtering decisions, or caveats to document?
 
-This context drives `@details` (pipeline narrative) and `@seealso` (link list).
+This context drives the `@details` and `@note` sections.
 
 ### Step 3 — Write the header in tag order
 
@@ -111,7 +108,7 @@ title (implicit, first line)
 @param (one per parameter, in argument order)
 @return
 @note (if needed)
-@seealso
+@seealso (if needed)
 documentation footer
 @import / @importFrom
 @export
@@ -151,26 +148,18 @@ documentation footer
 
 ### `@details`
 
-- Use for extended explanation: pipeline context, logic, checks, caveats
-- Opens with pipeline context: what calls this function, what it produces,
-  where the output goes, which downstream functions consume it
+- Use for extended explanation: logic, checks, caveats, and notable
+  implementation behaviour
 - Use `##` markdown subsections only when there are multiple distinct
   conceptual sections (e.g. integrity checks, manual corrections). Do not
   add subsections for a single topic.
-- Use bullet lists (`*`) for enumerating related items (e.g. downstream
-  consumers, check types)
+- Use bullet lists (`*`) for enumerating related items (e.g. check types,
+  correction steps)
 - Use **bold** (`**text**`) for named checks or concepts within a list
 - Inline code in backticks throughout
 
 ```r
 #' @details
-#' Called inside [run_pipeline()] as the first validation step. The output is
-#' passed directly to [process_records()] and also consumed by
-#' [generate_summary()]:
-#'
-#' * [process_records()] — applies transformation logic to validated rows
-#' * [generate_summary()] — aggregates validated records for reporting
-#'
 #' ## Data integrity checks
 #'
 #' Runs two data integrity checks and emits `cli` warnings if violations are
@@ -192,28 +181,15 @@ documentation footer
 ### `@param`
 
 - One `@param` per argument, in the same order as the function signature
-- Format: `Type. Description sentence.`
+- Format: `Type.`
   - Type is capitalized (e.g. `Character.`, `Data frame.`, `Logical.`)
-  - Description ends with a full stop
-  - If not obvious from the name, explain what the argument does
-- Inline code for argument values, column names, function calls
-- For arguments with a fixed set of allowed values, list them inline with
-  backtick-quoted strings
-- For arguments with default values that are non-obvious, document the default
-- For arguments that accept `NULL`, note it explicitly in the type and document
-  the behaviour: e.g. `Character or \`NULL\`. If \`NULL\`, [describe fallback
-  behaviour]. Default: \`NULL\`.`
+  - For arguments that accept `NULL`, note it in the type: e.g. `Character or \`NULL\`.`
 
 ```r
-#' @param the_df Data frame. Raw input table to be validated and cleaned.
-#' @param the_version Character. The reference data version string (e.g.
-#'   `"25.04"`). Used to scope manual corrections to the correct version and
-#'   prevent corrections from propagating silently into future data releases.
-#' @param the_source Character. One of `"sourceA"` or `"sourceB"`. Used
-#'   alongside `the_version` to scope manual corrections to the correct
-#'   data source.
-#' @param verbose Logical or `NULL`. If `TRUE`, emits progress messages via
-#'   `cli`. If `NULL`, falls back to the package-level option. Default: `NULL`.
+#' @param the_df Data frame.
+#' @param the_version Character.
+#' @param the_source Character.
+#' @param verbose Logical or `NULL`.
 ```
 
 ---
@@ -224,7 +200,6 @@ documentation footer
 - For data frames, follow the official roxygen2 pattern: describe how the
   output relates to the input, then use a bullet list to enumerate key
   properties (columns present, row semantics, grain of the output)
-- Also note downstream usage where it adds clarity
 - Do not describe implementation details
 - For functions called for their side effects (writing to disk, printing,
   modifying global state), use: `@return Called for its side effects. Returns
@@ -243,7 +218,6 @@ Richer case (data frame with notable structure):
 #'
 #' * Rows represent individual validated records after filtering.
 #' * Columns include `id`, `name`, `year`, `value`.
-#' * Passed directly to [process_records()] for downstream transformation.
 ```
 
 Side-effect case:
@@ -272,19 +246,14 @@ Side-effect case:
 
 ### `@seealso`
 
+- Use only for external references important for understanding the function's
+  context (e.g. standards, methodology, or reference data documentation)
 - Always written as an unordered bullet list
-- Include every function that calls this one and every function this one calls,
-  with a brief `—` dash description of the relationship
-- Include external documentation URLs as a final bullet where relevant
-- Use `[function()]` link syntax throughout
-- Do not include functions that are only indirectly related (connected via an
-  intermediate function) — use `@details` for pipeline narrative instead
+- Use `<URL>` syntax for external links
+- Omit this tag if there are no relevant external references
 
 ```r
 #' @seealso
-#' * [run_pipeline()] — calls this function as the first validation step
-#' * [process_records()] — receives the validated output of this function
-#' * [generate_summary()] — also consumes the validated output
 #' * Reference data documentation: <https://example.org/reference-data-docs>
 ```
 
@@ -362,8 +331,8 @@ markdown horizontal rule followed by an italic attribution line:
 2. Read the current function body in full
 3. Update any tags where the function body has changed
 4. For any content in the existing block that cannot be verified from the
-   function body alone (e.g. manually written caveats in `@note`, pipeline
-   context in `@details`), **preserve it and flag it** to the developer with
+   function body alone (e.g. manually written caveats in `@note` or `@details`),
+   **preserve it and flag it** to the developer with
    a comment such as:
    > ⚠️ Could not verify this from the function body — please confirm it is
    > still accurate: `[quoted text]`
@@ -381,13 +350,6 @@ markdown horizontal rule followed by an italic attribution line:
 #' values according to the package reference data.
 #'
 #' @details
-#' Called inside [run_pipeline()] as the first validation step. The output is
-#' passed directly to [process_records()] and also consumed by
-#' [generate_summary()]:
-#'
-#' * [process_records()] — applies transformation logic to validated rows
-#' * [generate_summary()] — aggregates validated records for reporting
-#'
 #' ## Data integrity checks
 #'
 #' Runs two data integrity checks and emits `cli` warnings if violations are
@@ -403,13 +365,9 @@ markdown horizontal rule followed by an italic attribution line:
 #' integrity checks. See the *Apply manual corrections* section of the
 #' function body.
 #'
-#' @param the_df Data frame. Raw input table to be validated and cleaned.
-#' @param the_version Character. The reference data version string (e.g.
-#'   `"25.04"`). Used to scope manual corrections to the correct version and
-#'   prevent corrections from propagating silently into future data releases.
-#' @param the_source Character. One of `"sourceA"` or `"sourceB"`. Used
-#'   alongside `the_version` to scope manual corrections to the correct
-#'   data source.
+#' @param the_df Data frame.
+#' @param the_version Character.
+#' @param the_source Character.
 #'
 #' @return A data frame with one row per validated input record.
 #'
@@ -417,9 +375,6 @@ markdown horizontal rule followed by an italic attribution line:
 #'   these represent placeholder entries not yet assigned a valid identifier.
 #'
 #' @seealso
-#' * [run_pipeline()] — calls this function as the first validation step
-#' * [process_records()] — receives the validated output of this function
-#' * [generate_summary()] — also consumes the validated output
 #' * Reference data documentation: <https://example.org/reference-data-docs>
 #'
 #'
@@ -442,7 +397,7 @@ clean_validate_input <- function(the_df, the_version, the_source) {
 
 ## Common Mistakes to Avoid
 
-- **Do not** put extended pipeline context or logic inside `@description` —
+- **Do not** put extended implementation detail or logic inside `@description` —
   that belongs in `@details`
 - **Do not** add `##` subsections in `@details` unless there are genuinely
   multiple distinct conceptual sections
@@ -457,9 +412,6 @@ clean_validate_input <- function(the_df, the_version, the_source) {
   git before writing
 - **Do not** silently drop unverifiable content when updating existing docs —
   flag it to the developer instead
-- **Do not** include functions in `@seealso` that are only indirectly related
-  (connected via an intermediate function) — use `@details` for pipeline
-  narrative instead
 - **Do not** copy import tags from another function without checking the
   function body — only document imports actually used
 - **Do not** modify, refactor, or correct any function body code — even if you
