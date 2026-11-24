@@ -8,7 +8,7 @@ metadata:
       orcid: 0000-0002-9370-9128
       url: https://github.com/theamarks/
   repository: https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox
-  version: 0.4.1
+  version: 0.4.2
 ---
 
 ## Purpose
@@ -24,8 +24,15 @@ that reflects both official roxygen2 conventions and lab package style.
 
 ### How to establish package context
 
-**Before writing or updating any documentation**, read the repo root `README.md`
-to establish package context. Extract the following from it:
+**Before writing or updating any documentation**, read all three of the
+following files from the repo root — no need to ask the user:
+
+1. `README.md` — package purpose, main categories of tools or functions,
+   pipeline or module structure, domain-specific terminology and key concepts
+2. `DESCRIPTION` — package metadata and roxygen2 configuration
+3. `NAMESPACE` — which functions are exported and which imports are declared
+
+Extract the following from these files collectively:
 
 - What the package does — scientific or analytical purpose
 - What the package provides — main categories of tools or functions
@@ -35,25 +42,17 @@ to establish package context. Extract the following from it:
 This context is essential for writing accurate `@details` and `@seealso`
 sections. Do not begin documentation until this context is established.
 
-### If README.md is missing or insufficient
+### If context files are missing or insufficient
 
-If the repo root `README.md` does not exist, or exists but does not provide
+If none of the three context files exist, or together they do not provide
 enough information to understand the package structure and purpose, do not
-guess or proceed with incomplete context. Instead, ask the user:
-
-> The `README.md` does not contain enough context for me to document this
-> function accurately. Could you point me to another file that describes the
-> package? For example:
-> - `DESCRIPTION` — for a brief package summary
-> - A vignette in `vignettes/` — for a narrative overview
-> - A specific source file — if you can point me to where this function fits
->   in the pipeline
-
-Wait for the user's response before proceeding.
+guess or proceed with incomplete context. Instead, ask the user to point to
+another file (e.g. a vignette in `vignettes/`, or a specific source file
+showing where the function fits in the pipeline).
 
 ### DESCRIPTION configuration
 
-Also check the `DESCRIPTION` file for roxygen2 configuration. If it contains:
+If `DESCRIPTION` contains:
 
 ```
 Roxygen: list(markdown = TRUE)
@@ -292,7 +291,6 @@ markdown horizontal rule followed by an italic attribution line:
 
 ```r
 #'
-#' ---
 #'
 #' *Documentation generated with `claude-sonnet-4-5` using the
 #' [`roxygen2-function-documentation`](https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox/commit/10708814459d410f719daebc579437e01a849fd2)
@@ -378,7 +376,6 @@ markdown horizontal rule followed by an italic attribution line:
 #' * Reference data documentation: <https://example.org/reference-data-docs>
 #'
 #'
-#' ---
 #'
 #' *Documentation generated with `claude-sonnet-4-5` using the
 #' [`roxygen2-function-documentation`](https://github.com/Seafood-Globalization-Lab/lab-genAI-toolbox/commit/10708814459d410f719daebc579437e01a849fd2)
